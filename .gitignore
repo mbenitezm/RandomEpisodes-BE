@@ -28,3 +28,5 @@ coverage
 benchmarks/graphs
 .vscode/
 dist/
+
+.env

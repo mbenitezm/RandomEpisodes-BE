@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { OMDB_API_KEY as API_KEY } from '../../config';
 
+//TODO standarize omdb responses to equal redis responses and manage more errors;
 export const getSeriesInfo = async (seriesName) => {
   const url = getUrl({ seriesName });
   const data = await fetchData(url);

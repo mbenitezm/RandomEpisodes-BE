@@ -1,13 +1,9 @@
 import { client as redis, getAsync } from '../../';
+import { notFoundResponse } from '../helpers/responses'
 import { REDIS_EXPIRY } from '../../config';
 
-const notFoundResponse = {
-  failed: true,
-  message: "object not found on redis"
-};
-
-export const saveSeries = (seriesName, numberOfSeasons) => {
-  redis.set(seriesName, JSON.stringify({ numberOfSeasons }), 'EX', REDIS_EXPIRY);
+export const saveSeries = (seriesName, totalSeasons) => {
+  redis.set(seriesName, JSON.stringify({ totalSeasons }), 'EX', REDIS_EXPIRY);
 }
 
 export const saveSeason = (seriesName, season, numberOfEpisodes) => {
@@ -26,8 +22,8 @@ export const getSeries = async (seriesName) => {
     return notFoundResponse;
   }
 
-  const { numberOfSeasons } = JSON.parse(response);
-  return { seriesName, numberOfSeasons };
+  const { totalSeasons } = JSON.parse(response);
+  return { seriesName, totalSeasons };
 }
 
 export const getSeason = async (seriesName, season) => {

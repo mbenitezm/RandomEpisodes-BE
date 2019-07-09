@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { notFoundResponse, apiErrorResponse } from '../helpers/responses';
 import { OMDB_API_KEY as API_KEY } from '../../config';
 
-//TODO standarize omdb responses to equal redis responses and manage more errors;
 export const getSeriesInfo = async (seriesName) => {
   const url = getUrl({ seriesName });
   const data = await fetchData(url);
@@ -23,15 +23,13 @@ export const getEpisodeInfo = async (seriesName, season, episode) => {
 const fetchData = async (url) => {
   try {
     const { data } = await axios.get(url);
-    return data;
-  } catch(error) {
-    const errorMessage = {
-      failed : true,
-      message: error,
-      url
+    if (data.Response === 'False' || data.Type != "series") {
+      return notFoundResponse;
     }
 
-    return errorMessage;
+    return data;
+  } catch(error) {
+    return apiErrorResponse;
   }
 }
 

@@ -1,10 +1,21 @@
-import { getEpisodeInfo } from './omdb.service';
-import { saveSeries, getSeries, saveSeason, getSeason } from './redis.service';
+import { getSeriesInfo, getSeasonInfo, getEpisodeInfo } from './omdb.service';
+import { saveSeries, getSeries, saveSeason, getSeason, saveEpisode, getEpisode } from './redis.service';
+
 export const getRandomEpisode = async (seriesName) => {
-  //redis.set("seriesName", seriesName);
-  const episode = await getEpisodeInfo(seriesName, 2, 3)
-  //saveSeries(seriesName, 10);
-  //saveSeason(seriesName, 5, 10);
-  //const episode = await getSeason(seriesName, 8);
-  return { episode };
+  const series = await get(seriesName);
+  return series;
 }
+
+// Ver por que falla el primer request
+const get = async (seriesName) => {
+  let series = getSeries(seriesName);
+  if (series.failed) {
+    series = getSeriesInfo(seriesName);
+  }
+
+  if (!series.failed) {
+    saveSeries(seriesName, series.totalSeasons);
+  }
+
+  return series;
+};
